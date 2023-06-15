@@ -1,0 +1,21 @@
+.formikInput {
+    width: 150px;
+    height: 30px;
+}
+
+.formikError {
+    width: 150px;
+    font-size: 10px;
+}
+
+@media (min-width: 724px) {
+    .formikInput {
+        width: 250px;
+        height: 30px;
+    }
+    
+    .formikError {
+        width: 250px;
+        font-size: 12px;
+    }
+}
