@@ -1,3 +1,3 @@
-const URLAPI = 'http://locahost:5000';
+const URLAPI = 'http://localhost:5000';
 
 export default URLAPI;

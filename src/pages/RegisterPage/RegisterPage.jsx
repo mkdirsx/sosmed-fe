@@ -2,10 +2,14 @@ import { useState } from 'react';
 import './RegisterPage.css';
 import { useFormik } from "formik";
 import { FiEye, FiEyeOff } from "react-icons/fi";
+import { useDispatch } from 'react-redux';
+import { createUser } from '../../redux/features/User/UserSlice';
+import { Toaster, toast } from 'react-hot-toast'
 
 export default function RegisterPage () {
     const [showPassword, setShowPassword] = useState(false);
     const [showRepeat, setShowRepeat] = useState(false);
+    const call = useDispatch();
 
     const validate = (values) => {
         const errors = {};
@@ -42,13 +46,40 @@ export default function RegisterPage () {
           email: '',
         },
         validate,
-        onSubmit: values => {
-            alert(JSON.stringify(values, null, 2));
+        onSubmit: (values, {setSubmitting}) => {
+            setSubmitting(true);
+            call(createUser({
+                    username: values.username,
+                    email: values.email,
+                    password: values.password
+                })
+            ).then(
+                (response) => {
+                    toast.success(response.message);
+                    setSubmitting(false);
+                },
+                (error) => {
+                    if(!error.response) {
+                        toast.error(error.message);
+                    }
+                    else if (!Array.isArray(error.response.data.message)) {
+                        toast.error(error.response.data.message);
+                    }
+                    else {
+                        error.response.data.message.map(value => {
+                            return toast.error(value.msg);
+                        })
+                    }
+                    setSubmitting(false);
+                }
+            )
         }
     });
 
     return (
         <div className="flex h-full justify-center items-center">
+            <Toaster/>
+            {console.log(formik.isSubmitting)}
             <div className="flex flex-col items-center bg-white w-[50%] h-[75%] py-[25px]">
                 <h1 className="text-[18px] md:text-[24px]">
                     Create an Account
@@ -92,7 +123,7 @@ export default function RegisterPage () {
                             {(formik.touched.repeatPassword && formik.errors.repeatPassword)? <div className="text-red-600">{formik.errors.repeatPassword}</div> : <>&nbsp;</>} 
                         </div>
 
-                        <button type='submit' onClick={formik.handleSubmit} className='self-center w-[75px] h-[35px] mt-[15px] rounded-[5px] transition-all duration-150 bg-green-500 hover:bg-green-600 active:scale-95'>
+                        <button type='submit' disabled={(formik.isSubmitting)? true : false} onClick={formik.handleSubmit} className={`self-center w-[75px] h-[35px] mt-[15px] rounded-[5px] transition-all duration-150 bg-green-500 hover:bg-green-600 ${(formik.isSubmitting)? 'cursor-not-allowed' : 'active:scale-95'}`}>
                             Sign Up
                         </button>
                     </div>

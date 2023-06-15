@@ -16,15 +16,15 @@ export const UserSlice = createSlice({
     }
 });
 
-export const createUser = async(data) => {
+export const createUser = (data) => async(dispatch) => {
     try {
         const response = await axios.post(`${URLAPI}/auth`, {
-            username: data.username,
-            password: data.password,
-            email: data.email
+           username: data.username,
+           password: data.password,
+           email: data.email
         });
-
-        return Promise.resolve(response.data);
+        
+        return Promise.resolve('yes');
     }
     catch(error) {
         return Promise.reject(error);
