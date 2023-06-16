@@ -13,6 +13,14 @@ export default function ProfilePage () {
         <div className="flex w-full h-full">
             <HomeSideBar user={user}/>
             <div className="flex flex-col w-full h-full px-[10px] py-[10px] overflow-y-auto"> 
+                {
+                    (user?.status === 'unverified')?
+                    <div className="w-full bg-yellow-500 text-center">
+                        Your account is not verified, verify you email to have full access to this site !
+                    </div>
+                    :
+                    null
+                }
                 <div className="flex flex-col md:flex-row md:items-center justify-center bg-blue-100 gap-[20px] px-[15px] py-[10px]">
                     <div className="flex flex-col items-center md:items-start">
                         <div>
@@ -31,7 +39,7 @@ export default function ProfilePage () {
                         </div>
                     </div>
                     <div className="flex flex-col items-center h-full justify-between">
-                        <div className="flex md:flex-col gap-[20px] py-[10px]">
+                        <div className="flex md:flex-col gap-[10px] py-[10px]">
                             <div>
                                 <div>
                                     Username:
@@ -45,12 +53,17 @@ export default function ProfilePage () {
                                     Email:
                                 </div>
                                 <div>
-                                    {(user?.email)? user.email : 'name'}
+                                    {(user?.email)? user.email : 'name'} {(user?.status === 'unverified')? <span className="text-red-600">(unverified)</span> : null}
+                                </div>
+                                <div className="flex justify-center items-center rounded-[5px] bg-yellow-500 transition-all duration-200 cursor-pointer hover:bg-yellow-600 active:scale-95">
+                                    Send Verification Link !
                                 </div>
                             </div>
                         </div>
-                        <div className="flex justify-center items-center w-[125px] h-[40px] rounded-[5px] bg-green-500 transition-all duration-200 cursor-pointer hover:bg-green-600 active:scale-95">
-                            Save Changes
+                        <div className="self-center md:self-end">
+                            <div className="flex justify-center items-center w-[125px] h-[40px] rounded-[5px] bg-green-500 transition-all duration-200 cursor-pointer hover:bg-green-600 active:scale-95">
+                                Save Changes
+                            </div>
                         </div>
                     </div>
                 </div>
