@@ -16,6 +16,21 @@ export const UserSlice = createSlice({
     }
 });
 
+export const login = (data) => async(dispatch) => {
+    try {
+        const response = await axios.post(`${URLAPI}/auth/login`, {
+            username: data.username,
+            password: data.password
+        });
+
+        localStorage.setItem('user', JSON.stringify(response.data.data));
+        return Promise.resolve(response.data);
+    }
+    catch(error) {
+        return Promise.reject(error);
+    }
+}
+
 export const createUser = (data) => async(dispatch) => {
     try {
         const response = await axios.post(`${URLAPI}/auth`, {

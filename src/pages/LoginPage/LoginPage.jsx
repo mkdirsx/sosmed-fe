@@ -1,15 +1,14 @@
 import { useState } from 'react';
-import './RegisterPage.css';
+import './LoginPage.css';
 import { useFormik } from "formik";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useDispatch } from 'react-redux';
-import { createUser } from '../../redux/features/User/UserSlice';
+import { login } from '../../redux/features/User/UserSlice';
 import { Toaster, toast } from 'react-hot-toast';
-import img from './img.jpg'
+import img from './img2.jpg';
 
-export default function RegisterPage () {
+export default function LoginPage () {
     const [showPassword, setShowPassword] = useState(false);
-    const [showRepeat, setShowRepeat] = useState(false);
     const call = useDispatch();
 
     const validate = (values) => {
@@ -18,23 +17,9 @@ export default function RegisterPage () {
             errors.username = "Required !";
         };
 
-        if(!values.email) {
-            errors.email = "Required !";
-        }
-        else if (! /^(?=.*[@]).*\.com$/g.test(values.email)) {
-            errors.email = "Must be a valid email !"
-        }
-
         if(!values.password) {
             errors.password = "Required !";
         }
-        else if (!/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.{8,}).*$/g.test(values.password)) {
-            errors.password = 'Password must have 1 lowercase, uppercase, numeric and 8 characters long';
-        };
-        //(?=.*\W)
-        if(values.repeatPassword !== values.password) {
-            errors.repeatPassword = "Password do not match !";
-        };
 
         return errors
     }
@@ -43,15 +28,12 @@ export default function RegisterPage () {
         initialValues: {
           username: '',
           password: '',
-          repeatPassword: '',
-          email: '',
         },
         validate,
         onSubmit: (values, {setSubmitting}) => {
             setSubmitting(true);
-            call(createUser({
+            call(login({
                     username: values.username,
-                    email: values.email,
                     password: values.password
                 })
             ).then(
@@ -82,8 +64,8 @@ export default function RegisterPage () {
             <Toaster/>
             <div className='flex flex-col md:flex-row md:w-[750px] md:h-[450px] w-[300px] h-[550px]'>
                 <div className='w-[full] md:w-[350px] relative'>
-                    <h1 className="text-[24px] md:text-[40px] absolute left-[30px] top-[25px] font-bold text-amber-500">
-                        Sign Up
+                    <h1 className="text-[24px] md:text-[40px] absolute left-[30px] top-[25px] font-bold text-yellow-500">
+                        Log In
                     </h1>
                     <img src={img} alt='' className='w-full h-full object-cover'/>
                 </div>
@@ -94,11 +76,6 @@ export default function RegisterPage () {
                             <input name="username" type="text" className="formikInput rounded-[5px] bg-gray-200 border-[2px] focus:border-black" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.username}/>
                             <div className='formikError'>
                                 {(formik.touched.username && formik.errors.username)? <div className="text-red-600">{formik.errors.username}</div> : <>&nbsp;</>}
-                            </div>
-                            Email:
-                            <input name="email" type="text" className="formikInput rounded-[5px] bg-gray-200 border-[2px] focus:border-black" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.email}/>
-                            <div className='formikError'>
-                                {(formik.touched.email && formik.errors.email)? <div className="text-red-600">{formik.errors.email}</div> : <>&nbsp;</>}
                             </div>
                             Password:
                             <div className='relative'>
@@ -113,22 +90,9 @@ export default function RegisterPage () {
                             <div className='formikError'>
                                 {(formik.touched.password && formik.errors.password)? <div className="text-red-600">{formik.errors.password}</div> : <>&nbsp;</>}
                             </div>
-                            Repeat password:
-                            <div className='relative'>
-                                <input name="repeatPassword" type={(showRepeat)? 'text' : 'password'} className="formikInput rounded-[5px] bg-gray-200 border-[2px] focus:border-black" onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.repeatPassword}/>
-                                {
-                                    (showRepeat)?
-                                    <FiEye onClick={() => setShowRepeat(false)} className='absolute top-[5px] right-[5px] cursor-pointer' size={20}/>
-                                    :
-                                    <FiEyeOff onClick={() => setShowRepeat(true)} className='absolute top-[5px] right-[5px] cursor-pointer' size={20}/>
-                                }
-                            </div>
-                            <div className='formikError'>
-                                {(formik.touched.repeatPassword && formik.errors.repeatPassword)? <div className="text-red-600">{formik.errors.repeatPassword}</div> : <>&nbsp;</>} 
-                            </div>
 
                             <button type='submit' disabled={(formik.isSubmitting)? true : false} onClick={formik.handleSubmit} className={`self-center w-[75px] h-[35px] mt-[15px] rounded-[5px] transition-all duration-150 bg-green-500 hover:bg-green-600 ${(formik.isSubmitting)? 'cursor-not-allowed' : 'active:scale-95'}`}>
-                                Sign Up
+                                Log In
                             </button>
                         </div>
                     </div>
