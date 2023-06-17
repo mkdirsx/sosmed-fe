@@ -15,7 +15,7 @@ export default function ProfilePage () {
 
     const onSaveChange = async() => {
         setDisable(true);
-        
+
         if(newName === user.username && !newProfile) {
             toast.error('no changes made !');
             setTimeout(() => {
@@ -32,9 +32,12 @@ export default function ProfilePage () {
                 ).then(
                     (response) => {
                         toast.success(response.message);
+                        setDisable(false);
                     },
                     (error) => {
+                        toast.error('Unable to save changes !');
                         console.log(error);
+                        setDisable(false);
                     }
                 )
             }
@@ -46,15 +49,15 @@ export default function ProfilePage () {
                 ).then(
                     (response) => {
                         toast.success(response.message);
+                        setDisable(false);
                     },
                     (error) => {
+                        toast.error('Unable to save changes !')
                         console.log(error);
+                        setDisable(false);
                     }
                 )
             }
-            setTimeout(() => {
-                setDisable(false);
-            }, 1000);
         }
     }
 

@@ -1,4 +1,4 @@
-export default function Posts () {
+export default function Posts (props) {
     return (
         <div className="flex flex-col gap-[10px] bg-blue-200 px-[15px] py-[10px] rounded-[5px]">
             <div className="flex gap-[10px] h-auto items-center">

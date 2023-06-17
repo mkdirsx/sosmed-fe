@@ -6,10 +6,12 @@ import { useDispatch } from 'react-redux';
 import { createUser } from '../../redux/features/User/UserSlice';
 import { Toaster, toast } from 'react-hot-toast';
 import img from './img.jpg'
+import { useNavigate } from 'react-router-dom';
 
 export default function RegisterPage () {
     const [showPassword, setShowPassword] = useState(false);
     const [showRepeat, setShowRepeat] = useState(false);
+    const navigate = useNavigate();
     const call = useDispatch();
 
     const validate = (values) => {
@@ -57,6 +59,7 @@ export default function RegisterPage () {
             ).then(
                 (response) => {
                     toast.success(response.message);
+                    navigate('/login');
                     setSubmitting(false);
                 },
                 (error) => {

@@ -1,12 +1,27 @@
 import { useEffect, useState } from "react"
 import HomeSideBar from "../../components/HomeSideBar/HomeSideBar";
 import Posts from "../../components/Posts/Posts";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getPosts } from "../../redux/features/Post/PostSlice";
+import { toast } from "react-hot-toast";
 
 export default function HomePage () {
     const user = useSelector((state) => state.User.user);
+    const posts = useSelector((state) => state.Post.posts);
     const [image, setImage] = useState({});
+    const call = useDispatch();
 
+    useEffect(() => {
+        call(getPosts()).then(
+            () => {
+
+            },
+            (error) => {
+                toast.error('unable to fetch posts !');
+                console.log(error);
+            }
+        )
+    }, [call]);
     return (
         <div className="flex w-full h-full">
             <HomeSideBar user={user}/>
@@ -30,9 +45,18 @@ export default function HomePage () {
                     </div>
                 </div>
                 <div className="flex flex-col w-full gap-[20px] items-center">
-                    <div className="w-[300px] sm:w-[400px] h-auto md:w-[500px] md:h-auto">
-                        <Posts/>
-                    </div>
+                    {
+                        (posts)?
+                        posts.map((value, index) => {
+                            return(
+                                <div key={index} className="w-[300px] sm:w-[400px] h-auto md:w-[500px] md:h-auto">
+                                    <Posts data={value}/>
+                                </div>
+                            )
+                        })
+                        :
+                        null
+                    }
                 </div>
             </div>
         </div>
