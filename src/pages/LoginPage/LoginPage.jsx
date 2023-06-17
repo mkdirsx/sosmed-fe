@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './LoginPage.css';
 import { useFormik } from "formik";
 import { FiEye, FiEyeOff } from "react-icons/fi";
@@ -6,9 +6,12 @@ import { useDispatch } from 'react-redux';
 import { login } from '../../redux/features/User/UserSlice';
 import { Toaster, toast } from 'react-hot-toast';
 import img from './img2.jpg';
+import { useNavigate } from 'react-router-dom';
+import { setUser } from '../../redux/features/User/UserSlice';
 
 export default function LoginPage () {
     const [showPassword, setShowPassword] = useState(false);
+    const navigate = useNavigate();
     const call = useDispatch();
 
     const validate = (values) => {
@@ -39,6 +42,11 @@ export default function LoginPage () {
             ).then(
                 (response) => {
                     toast.success(response.message);
+                    call(setUser( JSON.parse(localStorage.getItem('user')) ))
+                    setTimeout(() => {
+                        toast.remove();
+                        navigate('/home');
+                    }, 1000)
                     setSubmitting(false);
                 },
                 (error) => {
@@ -58,6 +66,12 @@ export default function LoginPage () {
             )
         }
     });
+
+    useEffect(() => {
+        if(localStorage.getItem('user')) {
+            navigate('/home');
+        }
+    }, [navigate])
 
     return (
         <div className="flex h-full justify-center items-center bg-blue-100">

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './RegisterPage.css';
 import { useFormik } from "formik";
 import { FiEye, FiEyeOff } from "react-icons/fi";
@@ -79,6 +79,12 @@ export default function RegisterPage () {
             )
         }
     });
+
+    useEffect(() => {
+        if(localStorage.getItem('user')) {
+            navigate('/home');
+        }
+    }, [navigate])
 
     return (
         <div className="flex h-full justify-center items-center bg-blue-100">

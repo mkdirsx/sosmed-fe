@@ -1,10 +1,19 @@
 import { useState } from "react";
 import { BiMenu } from 'react-icons/bi';
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { setUser } from "../../redux/features/User/UserSlice";
 
 export default function HomeSideBar (props) {
     const [show, setShow] = useState(false);
     const navigate = useNavigate();
+    const call = useDispatch();
+
+    const onLogout = () => {
+        localStorage.removeItem('user');
+        call(setUser({}));
+        navigate('/login');
+    }
 
     return (
         <div className="flex h-full bg-gray-700 relative">
@@ -37,7 +46,7 @@ export default function HomeSideBar (props) {
                     </div>
                 </div>
                 <div className="px-[20px] mt-[auto] whitespace-nowrap">
-                    <div className="bg-rose-900 py-[7px] rounded-[5px] px-[10px] transition-all duration-200 hover:bg-rose-950 active:scale-95 cursor-pointer select-none">
+                    <div onClick={onLogout} className="bg-rose-900 py-[7px] rounded-[5px] px-[10px] transition-all duration-200 hover:bg-rose-950 active:scale-95 cursor-pointer select-none">
                         Log Out
                     </div>
                 </div>

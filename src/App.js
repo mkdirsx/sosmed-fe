@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes} from 'react-router-dom';
+import { Navigate, Route, Routes, useNavigate} from 'react-router-dom';
 import { useEffect } from 'react';
 import './App.css';
 import RegisterPage from './pages/RegisterPage/RegisterPage';
@@ -10,10 +10,14 @@ import { setUser } from './redux/features/User/UserSlice';
 
 function App() {
   const call = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if(localStorage.getItem('user')) {
       call(setUser( JSON.parse(localStorage.getItem('user')) ))
+    }
+    else {
+      navigate('/login');
     }
   }, [call])
 

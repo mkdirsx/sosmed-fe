@@ -28,5 +28,47 @@ export const getPosts = () => async(dispatch) => {
     }
 }
 
+export const getUserPost = (data) => async(dispatch) => {
+    try {
+        const response = await axios.get(`${URLAPI}/posts/${data.id}`);
+
+        dispatch(setPosts(response.data.data));
+        return Promise.resolve(response.data);
+    }
+    catch(error) {
+        return Promise.reject(error);
+    }
+}
+
+export const createPost = (data) => async(dispatch) => {
+    try {
+        const response = await axios.post(`${URLAPI}/posts`, {
+           caption: data.caption,
+           image: data.image,
+           userId: data.userId
+        }, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        });
+
+        setTimeout(() => {
+            dispatch(getPosts()).then(
+                () => {
+
+                },
+                (error) => {
+                    return Promise.reject(error);
+                }
+            )
+        })
+
+        return Promise.resolve(response.data);
+    }
+    catch(error) {
+        return Promise.reject(error);
+    }
+}
+
 export const { setPosts } = PostSlice.actions;
 export default PostSlice.reducer;

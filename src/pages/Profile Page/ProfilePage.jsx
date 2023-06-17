@@ -5,9 +5,11 @@ import { useEffect, useState } from "react";
 import Posts from "../../components/Posts/Posts";
 import { updateUser } from "../../redux/features/User/UserSlice";
 import { Toaster, toast } from "react-hot-toast";
+import { getUserPost } from "../../redux/features/Post/PostSlice";
 
 export default function ProfilePage () {
     const user = useSelector((state) => state.User.user);
+    const posts = useSelector((state) => state.Post.posts);
     const [newName, setNewName] = useState('');
     const [newProfile, setNewProfile] = useState('');
     const [disable, setDisable] = useState(false);
@@ -63,7 +65,21 @@ export default function ProfilePage () {
 
     useEffect(() => {
         setNewName(user.username);
-    }, [user])
+        if(user) {
+            call(getUserPost({
+                    id: user.id
+                })
+            ).then(
+                () => {
+    
+                },
+                (error) => {
+                    toast.error('unable to fetch posts !');
+                    console.log(error);
+                }
+            )
+        }
+    }, [user, call])
 
     return (
         <div className="flex w-full h-full">
@@ -73,7 +89,7 @@ export default function ProfilePage () {
                 {
                     (user?.status === 'unverified')?
                     <div className="w-full bg-yellow-500 text-center">
-                        Your account is not verified, verify you email to have full access to this site !
+                        Your account is not verified, verify your email to have full access to this site !
                     </div>
                     :
                     null
@@ -91,28 +107,29 @@ export default function ProfilePage () {
                         <div>
                             <div className="flex flex-col gap-[3px] w-[185px] md:w-auto">
                                 Upload profile picture : 
-                                <input onChange={(e) => setNewProfile(e.target.files[0])} type="file" className="fileInput"/>
+                                <input onChange={(e) => setNewProfile(e.target.files[0])} accept="image/jpeg, image/png, image/jpg" type="file" className="fileInput"/>
                             </div>
                         </div>
                     </div>
                     <div className="flex flex-col items-center h-full justify-between">
-                        <div className="flex md:flex-col gap-[10px] py-[10px]">
+                        <div className="flex md:flex-col justify-center gap-[10px] py-[10px]">
                             <div>
                                 <div>
                                     Username:
                                 </div>
                                 <div>
-                                    {(user?.username)? <input onChange={(e) => setNewName(e.target.value)} value={newName} className="bg-gray-200 rounded-[5px] border-[2px] focus:border-black" type="text"/> : 'name'}
+                                    {(user?.username)? <input onChange={(e) => setNewName(e.target.value)} value={newName} className="bg-gray-200 w-[150px] md:w-[200px] rounded-[5px] border-[2px] focus:border-black" type="text"/> : 'name'}
                                 </div>
                             </div>
                             <div>
                                 <div>
                                     Email:
                                 </div>
-                                <div>
-                                    {(user?.email)? user.email : 'name'} {(user?.status === 'unverified')? <span className="text-red-600">(unverified)</span> : null}
+                                <div className="flex flex-col sm:flex-row">
+                                    {(user?.email)? user.email : 'name'}
+                                    {(user?.status === 'unverified')? <span className="text-red-600">(unverified)</span> : null}
                                 </div>
-                                <div className="flex justify-center items-center rounded-[5px] bg-yellow-500 transition-all duration-200 cursor-pointer hover:bg-yellow-600 active:scale-95">
+                                <div className="flex justify-center items-center w-[125px] md:w-[150px] text-[12px] rounded-[5px] bg-yellow-500 transition-all duration-200 cursor-pointer hover:bg-yellow-600 active:scale-95">
                                     Send Verification Link !
                                 </div>
                             </div>
@@ -129,15 +146,18 @@ export default function ProfilePage () {
                         Your Posts:
                     </div>
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-[10px]">
-                        <div className="h-auto w-full md:h-auto">
-                            <Posts/>
-                        </div>
-                        <div className="h-auto w-full md:h-auto">
-                            <Posts/>
-                        </div>
-                        <div className="h-auto w-full md:h-auto">
-                            <Posts/>
-                        </div>
+                        {
+                            (posts)?
+                            posts.map((value, index) => {
+                                return (
+                                    <div key={index} className="h-auto w-full md:h-auto">
+                                        <Posts data={value}/>
+                                    </div>
+                                )
+                            })
+                            :
+                            null
+                        }
                     </div>
                 </div>
             </div>
