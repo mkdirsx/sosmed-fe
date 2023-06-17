@@ -1,16 +1,70 @@
 import HomeSideBar from "../../components/HomeSideBar/HomeSideBar";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import './ProfilePage.css';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Posts from "../../components/Posts/Posts";
+import { updateUser } from "../../redux/features/User/UserSlice";
+import { Toaster, toast } from "react-hot-toast";
 
 export default function ProfilePage () {
     const user = useSelector((state) => state.User.user);
-    const [newName, setNewName] = useState(user?.username);
+    const [newName, setNewName] = useState('');
     const [newProfile, setNewProfile] = useState('');
+    const [disable, setDisable] = useState(false);
+    const call = useDispatch();
+
+    const onSaveChange = async() => {
+        setDisable(true);
+        
+        if(newName === user.username && !newProfile) {
+            toast.error('no changes made !');
+            setTimeout(() => {
+                setDisable(false);
+            }, 1000)
+        }
+        else {
+            if(newProfile) {
+                call(updateUser({
+                        id: user.id,
+                        username: newName,
+                        image: newProfile
+                    })
+                ).then(
+                    (response) => {
+                        toast.success(response.message);
+                    },
+                    (error) => {
+                        console.log(error);
+                    }
+                )
+            }
+            else {
+                call(updateUser({
+                        id: user.id,
+                        username: newName,
+                    })
+                ).then(
+                    (response) => {
+                        toast.success(response.message);
+                    },
+                    (error) => {
+                        console.log(error);
+                    }
+                )
+            }
+            setTimeout(() => {
+                setDisable(false);
+            }, 1000);
+        }
+    }
+
+    useEffect(() => {
+        setNewName(user.username);
+    }, [user])
 
     return (
         <div className="flex w-full h-full">
+            <Toaster/>
             <HomeSideBar user={user}/>
             <div className="flex flex-col w-full h-full px-[10px] py-[10px] overflow-y-auto"> 
                 {
@@ -61,9 +115,9 @@ export default function ProfilePage () {
                             </div>
                         </div>
                         <div className="self-center md:self-end">
-                            <div className="flex justify-center items-center w-[125px] h-[40px] rounded-[5px] bg-green-500 transition-all duration-200 cursor-pointer hover:bg-green-600 active:scale-95">
+                            <button disabled={(disable) ? true : false} onClick={onSaveChange} className={`flex justify-center items-center w-[125px] h-[40px] rounded-[5px] bg-green-500 transition-all duration-200 ${(disable)? 'cursor-not-allowed' : 'cursor-pointer hover:bg-green-600 active:scale-95'}`}>
                                 Save Changes
-                            </div>
+                            </button>
                         </div>
                     </div>
                 </div>

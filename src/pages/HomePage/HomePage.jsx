@@ -29,7 +29,7 @@ export default function HomePage () {
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-col w-full items-center">
+                <div className="flex flex-col w-full gap-[20px] items-center">
                     <div className="w-[300px] sm:w-[400px] h-auto md:w-[500px] md:h-auto">
                         <Posts/>
                     </div>
