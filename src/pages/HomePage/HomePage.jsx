@@ -1,16 +1,21 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import HomeSideBar from "../../components/HomeSideBar/HomeSideBar";
 import Posts from "../../components/Posts/Posts";
 import { useDispatch, useSelector } from "react-redux";
 import { createPost, getPosts } from "../../redux/features/Post/PostSlice";
 import { Toaster, toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 export default function HomePage () {
     const user = useSelector((state) => state.User.user);
     const posts = useSelector((state) => state.Post.posts);
+    const maxPage = Math.ceil(useSelector((state) => state.Post.total) / 5);
     const [caption, setCaption] = useState('');
     const [image, setImage] = useState('');
     const [isPosting, setIsPosting] = useState(false);
+    const [page, setPage] = useState(1);
+    const listInnerRef = useRef();
+    const navigate = useNavigate();
     const call = useDispatch();
 
     const onPost = () => {
@@ -25,6 +30,7 @@ export default function HomePage () {
                 ).then(
                     () => {
                         toast.success('New post created !');
+                        setCaption('');
                         setTimeout(() => {
                             setIsPosting(false);
                         }, 1000);
@@ -46,6 +52,7 @@ export default function HomePage () {
                 ).then(
                     () => {
                         toast.success('New post created !');
+                        setCaption('');
                         setTimeout(() => {
                             setIsPosting(false);
                         }, 1000);
@@ -65,8 +72,24 @@ export default function HomePage () {
         }
     }
 
+    const onScroll = () => {
+        if (listInnerRef.current) {
+          const { scrollTop, scrollHeight, clientHeight } = listInnerRef.current;
+          //console.log(scrollTop, scrollHeight, clientHeight);
+          if (scrollTop + clientHeight >= scrollHeight - 30 && page + 1 <= maxPage) {
+            setPage(page + 1);
+          }
+        }
+    };
+
     useEffect(() => {
-        call(getPosts()).then(
+        if(!localStorage.getItem('user')) {
+            navigate('/login');
+        }
+        call(getPosts({
+                page: page
+            })
+        ).then(
             () => {
 
             },
@@ -75,12 +98,13 @@ export default function HomePage () {
                 console.log(error);
             }
         )
-    }, [call]);
+    }, [call, page]);
+
     return (
         <div className="flex w-full h-full">
             <Toaster/>
             <HomeSideBar user={user}/>
-            <div className="flex flex-col flex-grow gap-[10px] bg-gray-300 px-[10px] py-[10px] overflow-y-auto overflow-x-hidden">
+            <div onScroll={onScroll} ref={listInnerRef} className="flex flex-col flex-grow gap-[10px] bg-gray-300 px-[10px] py-[10px] overflow-y-auto overflow-x-hidden">
                 <div className="w-full text-[24px]">
                     Explore
                 </div>
@@ -105,7 +129,7 @@ export default function HomePage () {
                         posts.map((value, index) => {
                             return(
                                 <div key={index} className="w-[300px] sm:w-[400px] h-auto md:w-[500px] md:h-auto">
-                                    <Posts data={value} getPosts={getPosts}/>
+                                    <Posts data={value} getPosts={getPosts} page={page}/>
                                 </div>
                             )
                         })

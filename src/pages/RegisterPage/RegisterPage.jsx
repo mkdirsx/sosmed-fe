@@ -59,7 +59,10 @@ export default function RegisterPage () {
             ).then(
                 (response) => {
                     toast.success(response.message);
-                    navigate('/login');
+                    setTimeout(() => {
+                        toast.remove();
+                        navigate('/login');
+                    }, 1000)
                     setSubmitting(false);
                 },
                 (error) => {

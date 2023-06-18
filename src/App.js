@@ -16,9 +16,6 @@ function App() {
     if(localStorage.getItem('user')) {
       call(setUser( JSON.parse(localStorage.getItem('user')) ))
     }
-    else {
-      navigate('/login');
-    }
   }, [call])
 
   return (

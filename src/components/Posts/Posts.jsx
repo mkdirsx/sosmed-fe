@@ -1,11 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux"
-import { updatePost } from "../../redux/features/Post/PostSlice";
+import { deletePost, updatePost } from "../../redux/features/Post/PostSlice";
 import { toast } from "react-hot-toast";
+import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
+import { createLike } from "../../redux/features/Like/LikeSlice";
 
 export default function Posts (props) {
     const user = useSelector((state) => state.User.user);
     const [newMessage, setNewMessage] = useState(props?.data?.caption);
+    const [liked, setLiked] = useState(false);
+    const [liking, setLiking] = useState(false);
     const [show, setShow] = useState(false);
     const [edit, setEdit] = useState(false);
     const call = useDispatch();
@@ -21,12 +25,16 @@ export default function Posts (props) {
                     (response) => {
                         toast.success(response?.message);
                         if(props.getPosts) {
-                            call(props.getPosts()).then(
+                            call(props.getPosts({
+                                    page: props.page
+                                })
+                            ).then(
                                 () => {
         
                                 },
-                                () => {
+                                (error) => {
                                     toast.error('unable to fetch posts !');
+                                    console.log(error);
                                 }
                             )
                         }
@@ -47,12 +55,80 @@ export default function Posts (props) {
         }
     };
 
+    const onDelete = () => {
+        call(deletePost({
+                id: props?.data?.id
+            })
+        ).then(
+            () => {
+                toast.success('post deleted !');
+                if(props.getPosts) {
+                    call(props.getPosts()).then(
+                        () => {
+
+                        },
+                        () => {
+                            toast.error('unable to fetch posts !');
+                        }
+                    )
+                }
+                setShow(false);
+            },
+            (error) => {
+                toast.error('unable to delete post !');
+                console.log(error);
+            }
+        );
+    }
+
+    const likingPost = () => {
+        setLiking(true);
+        call(createLike({
+                userId: props?.data?.user?.id,
+                postId: props?.data?.id
+            })
+        ).then(
+            (response) => {
+                toast.success(response?.message);
+                if(props.getPosts) {
+                    call(props.getPosts({
+                            page: props.page
+                        })
+                    ).then(
+                        () => {
+
+                        },
+                        (error) => {
+                            toast.error('unable to fetch posts !');
+                            console.log(error);
+                        }
+                    )
+                }
+                setLiked(!liked);
+                setTimeout(() => {
+                    setLiking(false);
+                }, 1000)
+            },
+            (error) => {
+                console.log(error);
+                setTimeout(() => {
+                    setLiking(false);
+                }, 1000)
+            }
+        )
+    }
+
     return (
         <div className="relative flex flex-col gap-[10px] bg-blue-200 px-[15px] py-[10px] rounded-[5px]">
             <div className="flex gap-[5px] h-auto items-center">
                 <img src={props?.data?.user?.profilePicture} alt="" className="h-[40px] w-[40px] rounded-full bg-cover"/>
-                <div className="font-bold hover:underline cursor-pointer">
-                    {props?.data?.user?.username}
+                <div className="flex flex-col">
+                    <div className="font-bold hover:underline cursor-pointer">
+                        {props?.data?.user?.username}
+                    </div>
+                    <div className="text-[10px]">
+                        {new Date(props?.data?.createdAt).getDay() + '/' + new Date(props?.data?.createdAt).getMonth() + '/' + new Date(props?.data?.createdAt).getFullYear()}
+                    </div>
                 </div>
             </div>
             {
@@ -81,6 +157,19 @@ export default function Posts (props) {
                     </div>
                 </div>
             </div>
+            <div className="flex gap-[5px] items-center">
+                <button onClick={likingPost} disabled={(liking)? true : false} className={''}>
+                    {
+                        (liked)?
+                        <AiFillHeart size={20}/>
+                        :
+                        <AiOutlineHeart size={20}/>
+                    }
+                </button>
+                <div>
+                    {props?.data?.likes.length || 0}
+                </div>
+            </div>
             {
                 (props?.data?.user?.id === user.id)?
                 <div onClick={() => setShow(!show)} className="absolute right-[15px] select-none flex justify-center items-center hover:font-bold w-[15px] cursor-pointer">
@@ -95,7 +184,7 @@ export default function Posts (props) {
                     <div onClick={() => {setEdit(true); setShow(false)}} className="bg-green-500 hover:bg-green-600 active:bg-green-700 rounded-[5px] text-center">
                         Edit
                     </div>
-                    <div className="bg-red-500 hover:bg-red-600 active:bg-red-700 rounded-[5px] text-center">
+                    <div onClick={onDelete} className="bg-red-500 hover:bg-red-600 active:bg-red-700 rounded-[5px] text-center">
                         Delete
                     </div>
                 </div>

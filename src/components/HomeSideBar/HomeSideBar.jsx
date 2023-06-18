@@ -43,9 +43,6 @@ export default function HomeSideBar (props) {
                         <div onClick={() => navigate('/home')} className="bg-emerald-800 py-[7px] rounded-[5px] px-[10px] transition-all duration-200 hover:bg-emerald-900 hover:translate-x-2 active:scale-95 cursor-pointer select-none">
                             Home
                         </div>
-                        <div className="bg-emerald-800 py-[7px] rounded-[5px] px-[10px] transition-all duration-200 hover:bg-emerald-900 hover:translate-x-2 active:scale-95 cursor-pointer select-none">
-                            Profile
-                        </div>
                     </div>
                     <div className="px-[20px] mt-[auto] whitespace-nowrap">
                         <div onClick={() => setShowModal(true)} className="bg-rose-900 py-[7px] rounded-[5px] px-[10px] transition-all duration-200 hover:bg-rose-950 active:scale-95 cursor-pointer select-none">
@@ -58,7 +55,7 @@ export default function HomeSideBar (props) {
                 <div className="bg-white opacity-50 w-full h-full absolute">
                     &nbsp;
                 </div>
-                <div className="flex flex-col gap-[20px] items-center justify-center w-[500px] h-[300px] p-[100px] bg-amber-300 opacity-100 z-50">
+                <div className="flex flex-col gap-[20px] items-center justify-center w-[500px] h-[300px] p-[100px] bg-blue-200 opacity-100 z-50">
                     <div >
                         Are you sure you want to Logout ?
                     </div>
