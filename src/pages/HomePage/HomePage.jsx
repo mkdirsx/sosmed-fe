@@ -105,7 +105,7 @@ export default function HomePage () {
                         posts.map((value, index) => {
                             return(
                                 <div key={index} className="w-[300px] sm:w-[400px] h-auto md:w-[500px] md:h-auto">
-                                    <Posts data={value}/>
+                                    <Posts data={value} getPosts={getPosts}/>
                                 </div>
                             )
                         })

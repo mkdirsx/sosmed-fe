@@ -145,13 +145,13 @@ export default function ProfilePage () {
                     <div className="text-[20px] font-bold">
                         Your Posts:
                     </div>
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-[10px]">
+                    <div className="columns-1 md:columns-2">
                         {
                             (posts)?
                             posts.map((value, index) => {
                                 return (
-                                    <div key={index} className="h-auto w-full md:h-auto">
-                                        <Posts data={value}/>
+                                    <div key={index} className="break-inside-avoid h-auto w-auto my-[10px] p-[5px]">
+                                        <Posts data={value} getPosts={getUserPost}/>
                                     </div>
                                 )
                             })

@@ -70,5 +70,18 @@ export const createPost = (data) => async(dispatch) => {
     }
 }
 
+export const updatePost = (data) => async(dispatch) => {
+    try {
+        const response = await axios.patch(`${URLAPI}/posts/${data.id}`, {
+            newMessage: data.newMessage
+        });
+
+        return Promise.resolve(response.data);
+    }
+    catch(error) {
+        return Promise.reject(error);
+    }
+} 
+
 export const { setPosts } = PostSlice.actions;
 export default PostSlice.reducer;
