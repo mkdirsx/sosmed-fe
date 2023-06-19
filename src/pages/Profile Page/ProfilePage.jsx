@@ -30,13 +30,14 @@ export default function ProfilePage () {
                 setDisable(false);
             }, 1000)
         }
-        else {
+        else { 
             if(newProfile) {
                 call(updateUser({
                         id: user.id,
                         username: newName,
                         desc: newDesc,
-                        image: newProfile
+                        image: newProfile,
+                        status: user.status
                     })
                 ).then(
                     (response) => {
@@ -54,7 +55,8 @@ export default function ProfilePage () {
                 call(updateUser({
                         id: user.id,
                         username: newName,
-                        desc: newDesc
+                        desc: newDesc,
+                        status: user.status
                     })
                 ).then(
                     (response) => {
@@ -62,7 +64,7 @@ export default function ProfilePage () {
                         setDisable(false);
                     },
                     (error) => {
-                        toast.error('Unable to save changes !')
+                        toast.error(error?.data?.message || 'unable to save change')
                         console.log(error);
                         setDisable(false);
                     }

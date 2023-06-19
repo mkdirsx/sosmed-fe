@@ -14,18 +14,22 @@ export default function PostDetailPage () {
     const [post, setPost] = useState([]);
     const [page, setPage] = useState(1);
     const [length, setLength] = useState(0);
+    const [isCommenting, setIsCommenting] = useState(false);
     const navigate = useNavigate();
     const params = useParams();
     const call = useDispatch();
 
     const onComment = () => {
+        setIsCommenting(true);
         if(!comment) {
             toast.error('comment cannot be empty !');
+            setIsCommenting(false);
         }
         else {
             call(createComment({
                     userId: user.id,
                     postId: params.id,
+                    status: user.status,
                     comment: comment
                 })
             ).then(
@@ -49,12 +53,14 @@ export default function PostDetailPage () {
                         }
                     );
                     toast.success('Comment posted !');
+                    setIsCommenting(false);
                 },
                 (error) => {
-                    toast.error('unable to post comment !');
+                    toast.error(error?.response?.data?.message || 'unable to post comment !');
                     console.log(error);
+                    setIsCommenting(false);
                 }
-            )
+            ) 
         }
     }
 
@@ -101,7 +107,7 @@ export default function PostDetailPage () {
                                 <textarea value={comment} onChange={(e) => setComment(e.target.value)} placeholder="Add comment" className="w-full h-full resize-none rounded-[5px] px-[10px] py-[5px]"/>
                             </div>
                             <div className="flex w-full justify-end">
-                                <button onClick={onComment} className={`bg-green-500 px-[15px] py-[5px] rounded-[5px] transition-scale duration-200 ${(true)? 'cursor-not-allowed' : 'cursor-pointer hover:bg-green-600 active:scale-95'}`}>
+                                <button onClick={() => {if(!isCommenting){onComment()} }} className={`bg-green-500 px-[15px] py-[5px] rounded-[5px] transition-scale duration-200 ${(isCommenting)? 'cursor-not-allowed' : 'cursor-pointer hover:bg-green-600 active:scale-95'}`}>
                                     Post
                                 </button>
                             </div>

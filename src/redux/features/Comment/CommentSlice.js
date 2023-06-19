@@ -21,7 +21,8 @@ export const createComment = (data) => async(dispatch) => {
         const response = await axios.post(`${URLAPI}/comments`, {
             userId: data.userId,
             postId: data.postId,
-            comment: data.comment
+            comment: data.comment,
+            status: data.status
         });
 
         return Promise.resolve(response.data);
