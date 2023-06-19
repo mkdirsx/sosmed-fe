@@ -7,6 +7,7 @@ import HomePage from './pages/HomePage/HomePage';
 import ProfilePage from './pages/Profile Page/ProfilePage';
 import { useDispatch } from 'react-redux';
 import { setUser } from './redux/features/User/UserSlice';
+import PostDetailPage from './pages/PostDetailPage/PostDetailPage';
 
 function App() {
   const call = useDispatch();
@@ -23,6 +24,7 @@ function App() {
         <Routes>
           <Route path='/' element={<Navigate to={'/home'}/>}/>
           <Route path='/home' element={<HomePage/>}/>
+          <Route path='/post/:id' element={<PostDetailPage/>}/>
           <Route path='/profile' element={<ProfilePage/>}/>
           <Route path='/login' element={<LoginPage/>}/>
           <Route path='/register' element={<RegisterPage/>}/>

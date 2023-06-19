@@ -46,6 +46,17 @@ export const getUserPost = (data) => async(dispatch) => {
     }
 };
 
+export const getOne = (data) => async(dispatch) => {
+    try {
+        const response = await axios.get(`${URLAPI}/posts/one/${data.id}`);
+
+        return Promise.resolve(response.data);
+    }
+    catch(error) {
+        return Promise.reject(error);
+    }
+};
+
 export const createPost = (data) => async(dispatch) => {
     try {
         const response = await axios.post(`${URLAPI}/posts`, {
