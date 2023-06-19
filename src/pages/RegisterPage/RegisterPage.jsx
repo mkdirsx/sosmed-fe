@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 import { createUser } from '../../redux/features/User/UserSlice';
 import { Toaster, toast } from 'react-hot-toast';
 import img from './img.jpg'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 export default function RegisterPage () {
     const [showPassword, setShowPassword] = useState(false);
@@ -138,7 +138,9 @@ export default function RegisterPage () {
                             <div className='formikError'>
                                 {(formik.touched.repeatPassword && formik.errors.repeatPassword)? <div className="text-red-600">{formik.errors.repeatPassword}</div> : <>&nbsp;</>} 
                             </div>
-
+                            <Link to={'/register'} className='text-[12px] hover:underline text-blue-500'>
+                                already have an account ?
+                            </Link>
                             <button type='submit' disabled={(formik.isSubmitting)? true : false} onClick={formik.handleSubmit} className={`self-center w-[75px] h-[35px] mt-[15px] rounded-[5px] transition-all duration-150 bg-green-500 hover:bg-green-600 ${(formik.isSubmitting)? 'cursor-not-allowed' : 'active:scale-95'}`}>
                                 Sign Up
                             </button>
