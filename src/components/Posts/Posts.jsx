@@ -22,6 +22,7 @@ export default function Posts (props) {
             if(newMessage !== props?.data?.caption) {
                 call(updatePost({
                         id: props?.data?.id,
+                        userId: props?.data?.userId,
                         newMessage: newMessage,
                     })
                 ).then(
@@ -29,11 +30,12 @@ export default function Posts (props) {
                         toast.success(response?.message);
                         if(props.getPosts) {
                             call(props.getPosts({
+                                    id: user.id,
                                     page: props.page
                                 })
                             ).then(
                                 () => {
-        
+
                                 },
                                 (error) => {
                                     toast.error('unable to fetch posts !');
@@ -60,13 +62,18 @@ export default function Posts (props) {
 
     const onDelete = () => {
         call(deletePost({
-                id: props?.data?.id
+                id: props?.data?.id,
+                userId: props?.data?.userId,
             })
         ).then(
             () => {
                 toast.success('post deleted !');
                 if(props.getPosts) {
-                    call(props.getPosts()).then(
+                    call(props.getPosts({
+                            id: user.id,
+                            page: props.page
+                        })
+                    ).then(
                         () => {
 
                         },
@@ -95,6 +102,7 @@ export default function Posts (props) {
                 toast.success(response?.message);
                 if(props.getPosts) {
                     call(props.getPosts({
+                            id: user.id,
                             page: props.page
                         })
                     ).then(
@@ -144,8 +152,8 @@ export default function Posts (props) {
     }, [props?.data?.id]);
 
     return (
-        <div onClick={() => navigate(`/post/${props?.data?.id}`)} className={`relative flex flex-col gap-[10px] bg-blue-200 px-[15px] py-[10px] rounded-[5px] transition-all duration-150 hover:scale-105 cursor-pointer`}>
-            <div className="flex gap-[5px] h-auto items-center">
+        <div className={`relative flex flex-col gap-[10px] bg-blue-200 px-[15px] py-[10px] rounded-[5px] transition-all duration-150 hover:bg-blue-400`}>
+            <div onClick={() => navigate(`/post/${props?.data?.id}`)} className="flex gap-[5px] h-auto items-center cursor-pointer">
                 <img src={props?.data?.user?.profilePicture} alt="" className="h-[40px] w-[40px] rounded-full bg-cover"/>
                 <div className="flex flex-col">
                     <div className="font-bold hover:underline cursor-pointer">
@@ -158,13 +166,13 @@ export default function Posts (props) {
             </div>
             {
                 (props?.data?.image)?
-                <div className="w-full h-[150px] sm:h-[200px] md:h-[250px]">
+                <div onClick={() => navigate(`/post/${props?.data?.id}`)} className="w-full h-[150px] sm:h-[200px] md:h-[250px] cursor-pointer">
                     <img src={props?.data?.image} alt="" className="w-full h-full rounded-[5px] bg-white"/>
                 </div>
                 :
                 null
             }
-            <div className="flex w-full">
+            <div onClick={() => {if(edit === false) navigate(`/post/${props?.data?.id}`)}} className="flex w-full cursor-pointer">
                 <div className={`${(edit)? 'hidden' : 'block'}`}>
                     {props?.data?.caption || 'message'}
                 </div>
@@ -205,7 +213,7 @@ export default function Posts (props) {
             }
             {
                 (props?.data?.user?.id === user.id)?
-                <div className={`${(show)? '' : 'hidden'} absolute right-[-45px] z-10 top-0 bg-white rounded-[5px] flex flex-col gap-[5px] px-[5px] py-[5px]`}>
+                <div className={`${(show)? '' : 'hidden'} absolute right-[-15px] top-[40px] sm:right-[-45px] z-10 top-0 bg-white rounded-[5px] flex flex-col gap-[5px] px-[5px] py-[5px]`}>
                     <div onClick={() => {setEdit(true); setShow(false)}} className="bg-green-500 hover:bg-green-600 active:bg-green-700 rounded-[5px] text-center">
                         Edit
                     </div>

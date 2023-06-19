@@ -36,7 +36,8 @@ export const login = (data) => async(dispatch) => {
             password: data.password
         });
 
-        localStorage.setItem('user', JSON.stringify(response.data.data));
+        localStorage.setItem('user', JSON.stringify(response.data.data.user));
+        localStorage.setItem('token', response.data.data.token);
         return Promise.resolve(response.data);
     }
     catch(error) {
@@ -81,6 +82,30 @@ export const updateUser = (data) => async(dispatch) => {
                 }
             )
         }, 200);
+
+        return Promise.resolve(response.data);
+    }
+    catch(error) {
+        return Promise.reject(error);
+    }
+};
+
+export const sendEmail = (data) => async(dispatch) => {
+    try {
+        const response = await axios.get(`${URLAPI}/auth/activation/${data.id}`);
+
+        return Promise.resolve(response.data);
+    }
+    catch(error) {
+        return Promise.reject(error);
+    }
+}
+
+export const verifyAccount = (data) => async(dispatch) => {
+    try {
+        const response = await axios.patch(`${URLAPI}/auth/verify/${data.id}`, {
+            code: data.code
+        });
 
         return Promise.resolve(response.data);
     }

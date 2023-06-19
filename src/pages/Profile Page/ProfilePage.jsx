@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import './ProfilePage.css';
 import { useEffect, useState, useRef } from "react";
 import Posts from "../../components/Posts/Posts";
-import { updateUser } from "../../redux/features/User/UserSlice";
+import { sendEmail, updateUser } from "../../redux/features/User/UserSlice";
 import { Toaster, toast } from "react-hot-toast";
 import { getUserPost } from "../../redux/features/Post/PostSlice";
 import { useNavigate } from "react-router-dom";
@@ -81,6 +81,21 @@ export default function ProfilePage () {
         }
     };
 
+    const onVerify = () => {
+        call(sendEmail({
+                id: user?.id
+            })
+        ).then(
+            (response) => {
+                toast.success(response.message);
+            },
+            (error) => {
+                toast.error('unable to send the email !, please wait');
+                console.log(error);
+            }
+        )
+    }
+
     useEffect(() => {
         if(!localStorage.getItem('user')) {
             navigate('/login');
@@ -102,7 +117,7 @@ export default function ProfilePage () {
                 }
             )
         }
-    }, [user, page])
+    }, [user, page, call, navigate])
 
     return (
         <div className="flex w-full h-full">
@@ -142,18 +157,18 @@ export default function ProfilePage () {
                                         Username:
                                     </div>
                                     <div>
-                                        {(user?.username)? <input onChange={(e) => setNewName(e.target.value)} value={newName} className="bg-gray-200 w-[150px] md:w-[200px] rounded-[5px] border-[2px] focus:border-black" type="text"/> : 'name'}
+                                        {(user?.username)? <input onChange={(e) => setNewName(e.target.value)} value={newName} className="bg-gray-200 w-[125px] sm:w-[150px] md:w-[200px] rounded-[5px] border-[2px] focus:border-black" type="text"/> : 'name'}
                                     </div>
                                 </div>
                                 <div>
                                     <div>
                                         Email:
                                     </div>
-                                    <div className="flex flex-col sm:flex-row">
+                                    <div className="flex flex-col text-[14px] sm:flex-row">
                                         {(user?.email)? user.email : 'name'}
-                                        {(user?.status === 'unverified')? <span className="text-red-600">(unverified)</span> : null}
+                                        {(user?.status === 'unverified')? <span className="text-red-600">(unverified)</span> : <span className="text-green-600">(verified)</span>}
                                     </div>
-                                    <div className="flex justify-center items-center w-[125px] md:w-[150px] text-[12px] rounded-[5px] bg-yellow-500 transition-all duration-200 cursor-pointer hover:bg-yellow-600 active:scale-95">
+                                    <div onClick={onVerify} className={`${(user?.status === 'unverified')? '' : 'hidden'} flex justify-center items-center w-[125px] md:w-[150px] text-[12px] rounded-[5px] bg-yellow-500 transition-all duration-200 cursor-pointer hover:bg-yellow-600 active:scale-95`}>
                                         Send Verification Link !
                                     </div>
                                 </div>
@@ -163,7 +178,7 @@ export default function ProfilePage () {
                                     Bio:
                                 </div>
                                 <div>
-                                    <textarea value={newDesc} maxLength={50} onChange={(e) => setNewDesc(e.target.value)} className="w-full h-[75px] resize-none p-[5px]"/>
+                                    <textarea value={newDesc} maxLength={50} onChange={(e) => setNewDesc(e.target.value)} className="w-full h-[75px] rounded-[5px] bg-gray-200 resize-none p-[5px]"/>
                                 </div>
                             </div>
                         </div>

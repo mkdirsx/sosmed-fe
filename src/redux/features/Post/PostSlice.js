@@ -48,7 +48,7 @@ export const getUserPost = (data) => async(dispatch) => {
 
 export const getOne = (data) => async(dispatch) => {
     try {
-        const response = await axios.get(`${URLAPI}/posts/one/${data.id}`);
+        const response = await axios.get(`${URLAPI}/posts/one/${data.id}?page=${data.commentPage}`);
 
         return Promise.resolve(response.data);
     }
@@ -90,7 +90,12 @@ export const createPost = (data) => async(dispatch) => {
 export const updatePost = (data) => async(dispatch) => {
     try {
         const response = await axios.patch(`${URLAPI}/posts/${data.id}`, {
-            newMessage: data.newMessage
+            newMessage: data.newMessage,
+            userId: data.userId
+        }, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
         });
 
         return Promise.resolve(response.data);
