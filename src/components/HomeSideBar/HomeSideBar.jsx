@@ -27,9 +27,9 @@ export default function HomeSideBar (props) {
                         <div className="flex justify-center w-full">
                             {
                                 (props?.user?.profilePicture) ?
-                                <img src={props.user.profilePicture} alt="" className="h-[125px]"/>
+                                <img src={props.user.profilePicture} alt="" className="rounded-full h-[125px] w-[125px]"/>
                                 :
-                                <img alt="" className="h-[125px] bg-white"/>
+                                <img alt="" className="h-[125px] bg-white rounded-full"/>
                             }
                         </div>
                         <div>
