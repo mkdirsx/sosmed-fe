@@ -25,6 +25,7 @@ export default function HomePage () {
                 call(createPost({
                         caption: caption,
                         image: image,
+                        status: user.status,
                         userId: user.id
                     })
                 ).then(
@@ -37,7 +38,7 @@ export default function HomePage () {
                     },
                     (error) => {
                         console.log(error);
-                        toast.error('unable to create post !');
+                        toast.error(error?.response?.data?.message || 'unable to create post !');
                         setTimeout(() => {
                             setIsPosting(false);
                         }, 1000);
@@ -47,7 +48,8 @@ export default function HomePage () {
             else {
                 call(createPost({
                     caption: caption,
-                    userId: user.id
+                    userId: user.id,
+                    status: user.status,
                     })
                 ).then(
                     () => {
@@ -59,7 +61,7 @@ export default function HomePage () {
                     },
                     (error) => {
                         console.log(error);
-                        toast.error('unable to create post !');
+                        toast.error(error?.response?.data?.message || 'unable to create post !');
                         setTimeout(() => {
                             setIsPosting(false);
                         }, 1000);

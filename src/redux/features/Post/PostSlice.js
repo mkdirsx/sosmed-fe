@@ -62,7 +62,8 @@ export const createPost = (data) => async(dispatch) => {
         const response = await axios.post(`${URLAPI}/posts`, {
            caption: data.caption,
            image: data.image,
-           userId: data.userId
+           userId: data.userId,
+           status: data.status
         }, {
             headers: {
                 "Content-Type": "multipart/form-data"

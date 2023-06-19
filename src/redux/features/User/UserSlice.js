@@ -65,7 +65,8 @@ export const updateUser = (data) => async(dispatch) => {
         const response = await axios.patch(`${URLAPI}/auth/${data.id}`, {
            username: data.username,
            desc: data.desc,
-           image: data.image
+           image: data.image,
+           status: data.status
         }, {
             headers: {
                 "Content-Type": "multipart/form-data"
