@@ -51,6 +51,7 @@ export default function RegisterPage () {
         validate,
         onSubmit: (values, {setSubmitting}) => {
             setSubmitting(true);
+            const registerToast = toast.loading('Registering !');
             call(createUser({
                     username: values.username,
                     email: values.email,
@@ -58,7 +59,7 @@ export default function RegisterPage () {
                 })
             ).then(
                 (response) => {
-                    toast.success(response.message);
+                    toast.success(response.message, {id: registerToast});
                     setTimeout(() => {
                         toast.remove();
                         navigate('/login');
@@ -67,12 +68,13 @@ export default function RegisterPage () {
                 },
                 (error) => {
                     if(!error.response) {
-                        toast.error(error.message);
+                        toast.error(error.message, {id: registerToast});
                     }
                     else if (!Array.isArray(error.response.data.message)) {
-                        toast.error(error.response.data.message);
+                        toast.error(error.response.data.message, {id: registerToast});
                     }
                     else {
+                        toast.dismiss();
                         error.response.data.message.map(value => {
                             return toast.error(value.msg);
                         })
@@ -138,7 +140,7 @@ export default function RegisterPage () {
                             <div className='formikError'>
                                 {(formik.touched.repeatPassword && formik.errors.repeatPassword)? <div className="text-red-600">{formik.errors.repeatPassword}</div> : <>&nbsp;</>} 
                             </div>
-                            <Link to={'/register'} className='text-[12px] hover:underline text-blue-500'>
+                            <Link to={'/login'} className='text-[12px] hover:underline text-blue-500'>
                                 already have an account ?
                             </Link>
                             <button type='submit' disabled={(formik.isSubmitting)? true : false} onClick={formik.handleSubmit} className={`self-center w-[75px] h-[35px] mt-[15px] rounded-[5px] transition-all duration-150 bg-green-500 hover:bg-green-600 ${(formik.isSubmitting)? 'cursor-not-allowed' : 'active:scale-95'}`}>

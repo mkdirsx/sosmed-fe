@@ -35,13 +35,14 @@ export default function LoginPage () {
         validate,
         onSubmit: (values, {setSubmitting}) => {
             setSubmitting(true);
+            const loginToast = toast.loading('Logging in !');
             call(login({
                     username: values.username,
                     password: values.password
                 })
             ).then(
                 (response) => {
-                    toast.success(response.message);
+                    toast.success(response.message, {id: loginToast});
                     call(setUser( JSON.parse(localStorage.getItem('user')) ))
                     setTimeout(() => {
                         toast.remove();
@@ -51,12 +52,13 @@ export default function LoginPage () {
                 },
                 (error) => {
                     if(!error.response) {
-                        toast.error(error.message);
+                        toast.error(error.message, {id: loginToast});
                     }
                     else if (!Array.isArray(error.response.data.message)) {
-                        toast.error(error.response.data.message);
+                        toast.error(error.response.data.message, {id: loginToast});
                     }
                     else {
+                        toast.dismiss();
                         error.response.data.message.map(value => {
                             return toast.error(value.msg);
                         })
